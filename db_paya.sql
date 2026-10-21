@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3307
--- Tiempo de generación: 16-09-2026 a las 16:10:37
+-- Tiempo de generación: 21-10-2026 a las 15:38:15
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -28,80 +28,173 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `calificaciones` (
-  `id` int(11) NOT NULL,
-  `pedido_id` int(11) NOT NULL,
-  `puntos_tienda` int(11) DEFAULT NULL CHECK (`puntos_tienda` between 1 and 5),
+  `calificacion_id` int(11) NOT NULL,
+  `factura_id` int(11) NOT NULL,
+  `puntos_comercio` int(11) DEFAULT NULL CHECK (`puntos_comercio` between 1 and 5),
   `puntos_repartidor` int(11) DEFAULT NULL CHECK (`puntos_repartidor` between 1 and 5),
-  `comentario` text DEFAULT NULL,
-  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp()
+  `comentario` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `calificaciones`
 --
 
-INSERT INTO `calificaciones` (`id`, `pedido_id`, `puntos_tienda`, `puntos_repartidor`, `comentario`, `fecha_creacion`) VALUES
-(1, 4, 1, NULL, 'Se demoraron mucho en procesar mi pedido', '2026-09-16 14:05:02'),
-(2, 2, 5, 4, 'El pedido se entrego a tiempo aunque ya venia un poco frio', '2026-09-16 14:09:29');
+INSERT INTO `calificaciones` (`calificacion_id`, `factura_id`, `puntos_comercio`, `puntos_repartidor`, `comentario`) VALUES
+(1, 2, 5, 4, 'Buen servicio pero hubo un poco de retraso en la entrega'),
+(2, 3, 4, 5, 'Buen servicio aunque el restaurante se demoro en dar respuesta a mi pedido');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `categorias_tiendas`
+-- Estructura de tabla para la tabla `categorias_comercio`
 --
 
-CREATE TABLE `categorias_tiendas` (
-  `id` int(11) NOT NULL,
-  `nombre` varchar(100) NOT NULL
+CREATE TABLE `categorias_comercio` (
+  `categoria_comercio_id` int(11) NOT NULL,
+  `nombre` varchar(50) NOT NULL,
+  `descripcion` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `categorias_tiendas`
+-- Volcado de datos para la tabla `categorias_comercio`
 --
 
-INSERT INTO `categorias_tiendas` (`id`, `nombre`) VALUES
-(2, 'Farmacia'),
-(1, 'Restaurante'),
-(4, 'Ropa'),
-(3, 'SuperMercado');
+INSERT INTO `categorias_comercio` (`categoria_comercio_id`, `nombre`, `descripcion`) VALUES
+(1, 'Restaurantes', 'Comida preparada lista para consumir'),
+(2, 'Heladerías y Postres', 'Helados, malteadas y dulces'),
+(3, 'Supermercados', 'Víveres, frutas, verduras y hogar'),
+(4, 'Farmacias', 'Medicamentos y cuidado personal'),
+(5, 'Mascotas', 'Alimento y accesorios para animales');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `detalles_pedidos`
+-- Estructura de tabla para la tabla `categorias_producto`
 --
 
-CREATE TABLE `detalles_pedidos` (
-  `id` int(11) NOT NULL,
-  `pedido_id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
-  `cantidad` int(11) NOT NULL,
-  `precio_unitario` decimal(10,2) NOT NULL
+CREATE TABLE `categorias_producto` (
+  `categoria_producto_id` int(11) NOT NULL,
+  `nombre` varchar(50) NOT NULL,
+  `comercio_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `detalles_pedidos`
+-- Volcado de datos para la tabla `categorias_producto`
 --
 
-INSERT INTO `detalles_pedidos` (`id`, `pedido_id`, `product_id`, `cantidad`, `precio_unitario`) VALUES
-(1, 4, 1, 1, 37500.00),
-(2, 2, 3, 4, 2000.00),
-(3, 1, 4, 2, 70000.00);
+INSERT INTO `categorias_producto` (`categoria_producto_id`, `nombre`, `comercio_id`) VALUES
+(1, 'Pollo Frito', 1),
+(2, 'Helado Gourmet', 3),
+(3, 'Lácteos', 2),
+(4, 'Analgésicos', 4),
+(5, 'Snacks Perros', 5);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `devoluciones`
+-- Estructura de tabla para la tabla `comercios`
 --
 
-CREATE TABLE `devoluciones` (
-  `id` int(11) NOT NULL,
-  `pedido_id` int(11) NOT NULL,
-  `motivo` text NOT NULL,
-  `estado` enum('pendiente','aprobada','rechazada') DEFAULT 'pendiente',
-  `monto_reembolsado` decimal(10,2) DEFAULT 0.00,
-  `fecha_solicitud` timestamp NOT NULL DEFAULT current_timestamp()
+CREATE TABLE `comercios` (
+  `comercio_id` int(11) NOT NULL,
+  `categoria_comercio_id` int(11) NOT NULL,
+  `nombre_comercial` varchar(100) NOT NULL,
+  `nit_rut` varchar(20) DEFAULT NULL,
+  `direccion` text NOT NULL,
+  `telefono` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `comercios`
+--
+
+INSERT INTO `comercios` (`comercio_id`, `categoria_comercio_id`, `nombre_comercial`, `nit_rut`, `direccion`, `telefono`) VALUES
+(1, 2, 'KFC', ' 900.439.301-2', 'Carrera 13 #15-23 Engativa', '3001232345'),
+(2, 5, 'Dog Chow', ' 830.050.346-8', 'Av. 19 Norte', '+571987654'),
+(3, 1, 'Popsy', '860053831-1', 'Av 19 #19-17 Santa Fe', '3103455678'),
+(4, 5, 'Hills', '9004195869-1', 'Calle 100 con 15', '+571555443'),
+(5, 5, 'Snau', ' 902.049.573-2.', 'CC Santa Fe Local 40', '+571888999'),
+(6, 4, 'Farmatodo', '830.129.327-1', 'Carrera 11ª No. 98-50, Of. 301-302, Bogotá D.C.', ' (601) 7432100'),
+(7, 4, 'Cruz Verde', ': 800.149.695-1', ' Carrera 12 # 96-32', '601 486 5000'),
+(8, 4, 'Drogueria Alemana', '890208788-9', 'Carrera 75 No. 24 - 20 ', '(601) 411 1010'),
+(9, 3, 'Fallabella', ' 900.017.447-8 ', 'Calle 99 # 11A – 32', 'Calle 99 # 11A – 32'),
+(10, 3, 'Ktronix', '890.900.943-1', ' Calle 11 No. 31 A – 42 ', '(601) 407 3033'),
+(11, 3, 'DollarCity', ' 900943243-4', 'Av. 3 # 57 Norte – 30, Cali, Valle del Cauca, Colombia', '+57 (2) 3876000'),
+(12, 1, 'McDonalds', '800.244.387-4', ' Av. 116 # 7-15 (Oficina 1402, Edificio Cusezar)', 'contactos@mcdonalds.');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `cupones_descuento`
+--
+
+CREATE TABLE `cupones_descuento` (
+  `cupon_id` int(11) NOT NULL,
+  `factura_id` int(11) DEFAULT NULL,
+  `codigo_cupon` varchar(20) NOT NULL,
+  `monto_descuento` decimal(10,2) NOT NULL,
+  `activo` tinyint(1) DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `cupones_descuento`
+--
+
+INSERT INTO `cupones_descuento` (`cupon_id`, `factura_id`, `codigo_cupon`, `monto_descuento`, `activo`) VALUES
+(1, 2, '056', 10000.00, 1),
+(2, 3, '078', 5000.00, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detalles_factura`
+--
+
+CREATE TABLE `detalles_factura` (
+  `detalle_id` int(11) NOT NULL,
+  `factura_id` int(11) NOT NULL,
+  `producto_id` int(11) NOT NULL,
+  `cantidad` int(11) NOT NULL CHECK (`cantidad` > 0),
+  `precio_historico` decimal(10,2) NOT NULL,
+  `subtotal_item` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `detalles_factura`
+--
+
+INSERT INTO `detalles_factura` (`detalle_id`, `factura_id`, `producto_id`, `cantidad`, `precio_historico`, `subtotal_item`) VALUES
+(1, 1, 1, 1, 45000.00, 45000.00),
+(2, 2, 2, 1, 18000.00, 18000.00),
+(3, 3, 3, 4, 4200.00, 16800.00),
+(4, 4, 4, 2, 3500.00, 7000.00),
+(5, 5, 5, 1, 12000.00, 12000.00);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `direcciones_usuario`
+--
+
+CREATE TABLE `direcciones_usuario` (
+  `direccion_id` int(11) NOT NULL,
+  `usuario_id` int(11) NOT NULL,
+  `etiqueta` varchar(50) DEFAULT NULL,
+  `calle_avenida` varchar(150) NOT NULL,
+  `ciudad` varchar(50) NOT NULL,
+  `coordenadas_gps` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `direcciones_usuario`
+--
+
+INSERT INTO `direcciones_usuario` (`direccion_id`, `usuario_id`, `etiqueta`, `calle_avenida`, `ciudad`, `coordenadas_gps`) VALUES
+(1, 1, 'Casa', 'Calle 85 #11-32', 'Bogotá', '4.667,-74.056'),
+(2, 1, 'Trabajo', 'Av. El Dorado #69-70', 'Bogotá', '4.656,-74.114'),
+(3, 2, 'Casa', 'Carrera 43A #5A-100', 'Medellín', '6.208,-75.568'),
+(4, 3, 'Apartamento', 'Calle 10 #34-20', 'Cali', '3.451,-76.532'),
+(5, 4, 'Casa', 'Avenida Principal 45', 'Barranquilla', '10.987,-74.801');
 
 -- --------------------------------------------------------
 
@@ -110,83 +203,31 @@ CREATE TABLE `devoluciones` (
 --
 
 CREATE TABLE `facturas` (
-  `id` int(11) NOT NULL,
-  `pedido_id` int(11) NOT NULL,
-  `metodo_pago_id` int(11) NOT NULL,
-  `monto_total` decimal(10,2) NOT NULL,
-  `fecha_emision` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `favoritos`
---
-
-CREATE TABLE `favoritos` (
-  `id` int(11) NOT NULL,
+  `factura_id` int(11) NOT NULL,
+  `codigo_pedido` varchar(20) NOT NULL,
+  `fecha_emision` timestamp NOT NULL DEFAULT current_timestamp(),
   `usuario_id` int(11) NOT NULL,
-  `tienda_id` int(11) NOT NULL
+  `comercio_id` int(11) NOT NULL,
+  `repartidor_id` int(11) DEFAULT NULL,
+  `direccion_id` int(11) NOT NULL,
+  `metodo_pago_id` int(11) NOT NULL,
+  `subtotal_productos` decimal(10,2) NOT NULL,
+  `costo_envio` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `propina_repartidor` decimal(10,2) DEFAULT 0.00,
+  `total_pagado` decimal(10,2) NOT NULL,
+  `estado_pago` varchar(20) DEFAULT 'Procesando'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `favoritos`
+-- Volcado de datos para la tabla `facturas`
 --
 
-INSERT INTO `favoritos` (`id`, `usuario_id`, `tienda_id`) VALUES
-(4, 2, 1),
-(5, 3, 2),
-(1, 4, 1),
-(2, 4, 4),
-(3, 5, 3);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `historial_estados_pedido`
---
-
-CREATE TABLE `historial_estados_pedido` (
-  `id` int(11) NOT NULL,
-  `pedido_id` int(11) NOT NULL,
-  `estado` enum('pendiente','preparando','en_camino','entregado','cancelado') NOT NULL,
-  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `historial_estados_pedido`
---
-
-INSERT INTO `historial_estados_pedido` (`id`, `pedido_id`, `estado`, `fecha_registro`) VALUES
-(1, 1, 'entregado', '2026-09-15 13:51:45'),
-(2, 4, 'cancelado', '2026-09-16 15:10:45'),
-(3, 2, 'entregado', '2026-09-16 13:52:57'),
-(4, 3, 'entregado', '2026-09-16 13:52:57');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `horarios_tiendas`
---
-
-CREATE TABLE `horarios_tiendas` (
-  `id` int(11) NOT NULL,
-  `tienda_id` int(11) NOT NULL,
-  `dia_semana` enum('Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo') NOT NULL,
-  `hora_apertura` time NOT NULL,
-  `hora_cierre` time NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `horarios_tiendas`
---
-
-INSERT INTO `horarios_tiendas` (`id`, `tienda_id`, `dia_semana`, `hora_apertura`, `hora_cierre`) VALUES
-(1, 4, 'Lunes', '08:30:00', '05:00:00'),
-(2, 3, 'Martes', '07:00:00', '08:45:00'),
-(3, 2, 'Martes', '08:00:33', '08:00:00'),
-(4, 1, 'Miercoles', '06:00:00', '05:00:00'),
-(5, 5, 'Lunes', '07:00:04', '06:00:04');
+INSERT INTO `facturas` (`factura_id`, `codigo_pedido`, `fecha_emision`, `usuario_id`, `comercio_id`, `repartidor_id`, `direccion_id`, `metodo_pago_id`, `subtotal_productos`, `costo_envio`, `propina_repartidor`, `total_pagado`, `estado_pago`) VALUES
+(1, 'DEL-2026-001', '2026-10-07 19:17:04', 1, 1, 1, 1, 1, 45000.00, 4500.00, 3000.00, 52500.00, 'Pagado'),
+(2, 'DEL-2026-002', '2026-10-07 19:17:04', 2, 3, 2, 3, 2, 18000.00, 5000.00, 2000.00, 25000.00, 'Pagado'),
+(3, 'DEL-2026-003', '2026-10-07 19:17:04', 3, 2, 3, 4, 3, 16800.00, 3500.00, 0.00, 20300.00, 'Pagado'),
+(4, 'DEL-2026-004', '2026-10-07 19:17:04', 4, 4, 5, 5, 4, 7000.00, 6000.00, 1500.00, 14500.00, 'Pagado'),
+(5, 'DEL-2026-005', '2026-10-07 19:17:04', 5, 5, 1, 1, 1, 12000.00, 4000.00, 2000.00, 18000.00, 'Rechazado');
 
 -- --------------------------------------------------------
 
@@ -195,51 +236,20 @@ INSERT INTO `horarios_tiendas` (`id`, `tienda_id`, `dia_semana`, `hora_apertura`
 --
 
 CREATE TABLE `metodos_pago` (
-  `id` int(11) NOT NULL,
-  `usuario_id` int(11) NOT NULL,
-  `tipo` enum('tarjeta','efectivo','transferencia') NOT NULL,
-  `proveedor` varchar(50) DEFAULT NULL,
-  `token_pago` varchar(255) DEFAULT NULL
+  `metodo_pago_id` int(11) NOT NULL,
+  `nombre` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `metodos_pago`
 --
 
-INSERT INTO `metodos_pago` (`id`, `usuario_id`, `tipo`, `proveedor`, `token_pago`) VALUES
-(1, 5, 'tarjeta', 'visa', 'tok_1234'),
-(2, 4, 'efectivo', NULL, NULL),
-(3, 3, 'transferencia', 'nequi', NULL),
-(4, 7, 'efectivo', NULL, NULL);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `pedidos`
---
-
-CREATE TABLE `pedidos` (
-  `id` int(11) NOT NULL,
-  `cliente_id` int(11) NOT NULL,
-  `repartidor_id` int(11) DEFAULT NULL,
-  `tienda_id` int(11) NOT NULL,
-  `promocion_id` int(11) DEFAULT NULL,
-  `estado` enum('pendiente','preparando','en_camino','entregado','cancelado') DEFAULT 'pendiente',
-  `total` decimal(10,2) NOT NULL DEFAULT 0.00,
-  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
-  `fecha_asignacion` timestamp NULL DEFAULT NULL,
-  `fecha_entrega` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `pedidos`
---
-
-INSERT INTO `pedidos` (`id`, `cliente_id`, `repartidor_id`, `tienda_id`, `promocion_id`, `estado`, `total`, `fecha_creacion`, `fecha_asignacion`, `fecha_entrega`) VALUES
-(1, 5, 1, 3, 1, 'preparando', 15400.00, '2026-09-16 13:38:10', '2026-09-15 13:33:48', '2026-09-15 14:33:40'),
-(2, 4, 3, 5, 2, 'entregado', 25000.00, '2026-09-14 13:33:48', '2026-09-14 13:40:19', '2026-09-14 14:34:48'),
-(3, 5, 5, 4, 3, 'preparando', 70000.00, '2026-09-16 13:38:23', '2026-09-16 17:10:23', '2026-09-17 15:38:23'),
-(4, 2, 2, 1, NULL, 'cancelado', 15000.00, '2026-09-15 13:38:23', '2026-09-16 14:38:23', '2026-09-16 14:40:23');
+INSERT INTO `metodos_pago` (`metodo_pago_id`, `nombre`) VALUES
+(1, 'Tarjeta de Crédito Visa'),
+(2, 'Tarjeta de Débito Mastercard'),
+(3, 'Efectivo contra entrega'),
+(4, 'Billetera Digital App'),
+(5, 'Transferencia Bancaria');
 
 -- --------------------------------------------------------
 
@@ -248,73 +258,74 @@ INSERT INTO `pedidos` (`id`, `cliente_id`, `repartidor_id`, `tienda_id`, `promoc
 --
 
 CREATE TABLE `productos` (
-  `id` int(11) NOT NULL,
-  `tienda_id` int(11) NOT NULL,
+  `producto_id` int(11) NOT NULL,
+  `categoria_producto_id` int(11) NOT NULL,
+  `comercio_id` int(11) NOT NULL,
   `nombre` varchar(100) NOT NULL,
-  `precio` decimal(10,2) NOT NULL
+  `descripcion` text DEFAULT NULL,
+  `precio_venta` decimal(10,2) NOT NULL,
+  `disponible` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `productos`
 --
 
-INSERT INTO `productos` (`id`, `tienda_id`, `nombre`, `precio`) VALUES
-(1, 1, 'Churrasco', 37500.00),
-(3, 3, 'libra de azucar', 2000.00),
-(4, 4, 'pantalon de mezclilla', 70000.00);
+INSERT INTO `productos` (`producto_id`, `categoria_producto_id`, `comercio_id`, `nombre`, `descripcion`, `precio_venta`, `disponible`) VALUES
+(1, 1, 1, 'Balde de Pollo 8 Pzas', '8 piezas de pollo crujiente + papas', 45000.00, 1),
+(2, 2, 3, 'Malteada Popsy Familiar', 'Malteada de helado gourmet de 1L', 18000.00, 1),
+(3, 3, 2, 'Leche Entera 1L', 'Bolsa de leche entera pasteurizada', 4200.00, 1),
+(4, 4, 4, 'Caja de Acetaminofén 500mg', 'Blister por 10 tabletas', 3500.00, 1),
+(5, 5, 5, 'Galletas para Perro', 'Paquete de galletas horneadas sabor pollo', 12000.00, 1);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `promociones`
+-- Estructura de tabla para la tabla `repartidores`
 --
 
-CREATE TABLE `promociones` (
-  `id` int(11) NOT NULL,
-  `codigo` varchar(20) NOT NULL,
-  `porcentaje_descuento` decimal(5,2) NOT NULL,
-  `fecha_inicio` datetime NOT NULL,
-  `fecha_fin` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `promociones`
---
-
-INSERT INTO `promociones` (`id`, `codigo`, `porcentaje_descuento`, `fecha_inicio`, `fecha_fin`) VALUES
-(1, '1234', 20.00, '2026-09-16 15:26:36', '2026-09-18 15:26:36'),
-(2, '1235', 10.00, '2026-09-16 15:26:36', '2026-09-16 15:26:36'),
-(3, '1236', 25.00, '2026-09-10 15:27:34', '2026-09-16 15:27:34'),
-(4, '1237', 12.00, '2026-09-16 15:27:34', '2026-09-16 15:27:34');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `tiendas`
---
-
-CREATE TABLE `tiendas` (
-  `id` int(11) NOT NULL,
-  `categoria_tienda_id` int(11) NOT NULL,
+CREATE TABLE `repartidores` (
+  `repartidor_id` int(11) NOT NULL,
   `nombre` varchar(100) NOT NULL,
-  `direccion` varchar(255) NOT NULL,
   `telefono` varchar(20) DEFAULT NULL,
-  `imagen_logo` varchar(255) DEFAULT NULL,
-  `pedido_minimo` decimal(10,2) DEFAULT 0.00,
-  `esta_abierta` tinyint(1) DEFAULT 1,
-  `creado_en` timestamp NOT NULL DEFAULT current_timestamp()
+  `vehiculo_id` int(11) DEFAULT NULL,
+  `estado` varchar(20) DEFAULT 'Disponible'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `tiendas`
+-- Volcado de datos para la tabla `repartidores`
 --
 
-INSERT INTO `tiendas` (`id`, `categoria_tienda_id`, `nombre`, `direccion`, `telefono`, `imagen_logo`, `pedido_minimo`, `esta_abierta`, `creado_en`) VALUES
-(1, 1, 'Restaurante Santa Maria', 'Cr 45 #75-32', '3013036689', 'Logo', 0.00, 1, '2026-09-09 14:30:28'),
-(2, 2, 'Farmacia los libertadores', 'cll72#06-21', '3124087655', NULL, 5000.00, 1, '2026-09-16 13:23:56'),
-(3, 3, 'Distribuidora stiven', 'carrera 7#71-21', '3007654092', NULL, 5000.00, 1, '2026-09-16 13:23:56'),
-(4, 4, 'Boutique siempre linda', 'Cll 2#4b-12', '3215534506', NULL, 50000.00, 1, '2026-09-16 13:26:26'),
-(5, 1, 'Restaurante limonera', 'Carrera 12#5Bis', '3027654008', NULL, 10000.00, 1, '2026-09-16 13:26:26');
+INSERT INTO `repartidores` (`repartidor_id`, `nombre`, `telefono`, `vehiculo_id`, `estado`) VALUES
+(1, 'Carlos Mendoza', '+573111111111', 1, 'En Ruta'),
+(2, 'Andrés Castro', '+573112222222', 2, 'Disponible'),
+(3, 'Brayan Silva', '+573113333333', 3, 'Disponible'),
+(4, 'Mateo Gómez', '+573114444444', 4, 'Inactivo'),
+(5, 'Daniel Ortiz', '+573115555555', 5, 'En Ruta');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `seguimiento_envio`
+--
+
+CREATE TABLE `seguimiento_envio` (
+  `seguimiento_id` int(11) NOT NULL,
+  `factura_id` int(11) NOT NULL,
+  `estado_entrega` varchar(50) DEFAULT 'Recibido',
+  `ultima_actualizacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `seguimiento_envio`
+--
+
+INSERT INTO `seguimiento_envio` (`seguimiento_id`, `factura_id`, `estado_entrega`, `ultima_actualizacion`) VALUES
+(1, 1, 'En Camino', '2026-10-07 19:17:04'),
+(2, 2, 'Entregado', '2026-10-07 19:17:04'),
+(3, 3, 'Preparando', '2026-10-07 19:17:04'),
+(4, 4, 'Entregado', '2026-10-07 19:17:04'),
+(5, 5, 'Cancelado', '2026-10-07 19:17:04');
 
 -- --------------------------------------------------------
 
@@ -323,52 +334,47 @@ INSERT INTO `tiendas` (`id`, `categoria_tienda_id`, `nombre`, `direccion`, `tele
 --
 
 CREATE TABLE `usuarios` (
-  `id` int(11) NOT NULL,
+  `usuario_id` int(11) NOT NULL,
   `nombre` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `telefono` varchar(20) DEFAULT NULL,
-  `rol` enum('cliente','repartidor','admin') NOT NULL,
-  `creado_en` timestamp NOT NULL DEFAULT current_timestamp()
+  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `nombre`, `email`, `telefono`, `rol`, `creado_en`) VALUES
-(1, 'Roberto', 'robertohurtado12@gmail.com', '3154870708', 'cliente', '2026-09-09 13:19:19'),
-(2, 'Sofia', 'baez4sofia@gmail.com', '3125643213', 'cliente', '2026-09-09 13:53:23'),
-(3, 'Luis', 'luis2345@gmail.com', '3117345609', 'cliente', '2026-09-09 13:54:15'),
-(4, 'Karen', 'karenlorena13@gmail.com', '3204394502', 'cliente', '2026-09-09 13:56:05'),
-(5, 'Felipe', 'felipe06ortis@gmail.com', '3154327890', 'cliente', '2026-09-16 13:08:25'),
-(6, 'Martha orduz', 'marthaorduz@gmail.com', '3007654008', 'cliente', '2026-09-16 13:08:25'),
-(7, 'Santiago Pineda', 'pineda1234@gmail.com', '3219834506', 'cliente', '2026-09-16 13:09:22');
+INSERT INTO `usuarios` (`usuario_id`, `nombre`, `email`, `telefono`, `fecha_registro`) VALUES
+(1, 'Mariana Ríos', 'mariana@email.com', '+573001111111', '2026-10-07 14:17:04'),
+(2, 'Santiago Peña', 'santiago@email.com', '+573002222222', '2026-10-07 14:17:04'),
+(3, 'Camila López', 'camila@email.com', '+573003333333', '2026-10-07 14:17:04'),
+(4, 'Esteban Quito', 'esteban@email.com', '+573004444444', '2026-10-07 14:17:04'),
+(5, 'Valeria Vélez', 'valeria@email.com', '+573005555555', '2026-10-07 14:17:04');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `vehiculos_repartidores`
+-- Estructura de tabla para la tabla `vehiculos`
 --
 
-CREATE TABLE `vehiculos_repartidores` (
-  `id` int(11) NOT NULL,
-  `repartidor_id` int(11) NOT NULL,
-  `tipo_vehiculo` enum('moto','bicicleta','auto') NOT NULL,
-  `placa` varchar(20) DEFAULT NULL
+CREATE TABLE `vehiculos` (
+  `vehiculo_id` int(11) NOT NULL,
+  `tipo` varchar(50) NOT NULL,
+  `placa` varchar(20) DEFAULT NULL,
+  `modelo` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `vehiculos_repartidores`
+-- Volcado de datos para la tabla `vehiculos`
 --
 
-INSERT INTO `vehiculos_repartidores` (`id`, `repartidor_id`, `tipo_vehiculo`, `placa`) VALUES
-(1, 1, 'auto', 'APQ123'),
-(2, 3, 'auto', 'SCZ451'),
-(3, 5, 'bicicleta', 'no aplica'),
-(4, 7, 'moto', 'MOZ 95E'),
-(5, 2, 'moto', 'INC 50U'),
-(6, 4, 'auto', 'RYN 987'),
-(7, 6, 'bicicleta', 'no aplica');
+INSERT INTO `vehiculos` (`vehiculo_id`, `tipo`, `placa`, `modelo`) VALUES
+(1, 'Motocicleta', 'XYZ-123', 'Honda Cargo 150'),
+(2, 'Bicicleta', NULL, 'Trek Marlin 5'),
+(3, 'Motocicleta', 'ABC-789', 'Yamaha YBR'),
+(4, 'Automóvil', 'MX-4455', 'Chevrolet Spark'),
+(5, 'Bicicleta Eléctrica', NULL, 'Xiaomi QiCYCLE');
 
 --
 -- Índices para tablas volcadas
@@ -378,112 +384,105 @@ INSERT INTO `vehiculos_repartidores` (`id`, `repartidor_id`, `tipo_vehiculo`, `p
 -- Indices de la tabla `calificaciones`
 --
 ALTER TABLE `calificaciones`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `pedido_id` (`pedido_id`);
+  ADD PRIMARY KEY (`calificacion_id`),
+  ADD KEY `factura_id` (`factura_id`);
 
 --
--- Indices de la tabla `categorias_tiendas`
+-- Indices de la tabla `categorias_comercio`
 --
-ALTER TABLE `categorias_tiendas`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `nombre` (`nombre`);
+ALTER TABLE `categorias_comercio`
+  ADD PRIMARY KEY (`categoria_comercio_id`);
 
 --
--- Indices de la tabla `detalles_pedidos`
+-- Indices de la tabla `categorias_producto`
 --
-ALTER TABLE `detalles_pedidos`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `pedido_id` (`pedido_id`),
-  ADD KEY `product_id` (`product_id`);
+ALTER TABLE `categorias_producto`
+  ADD PRIMARY KEY (`categoria_producto_id`),
+  ADD KEY `comercio_id` (`comercio_id`);
 
 --
--- Indices de la tabla `devoluciones`
+-- Indices de la tabla `comercios`
 --
-ALTER TABLE `devoluciones`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `pedido_id` (`pedido_id`);
+ALTER TABLE `comercios`
+  ADD PRIMARY KEY (`comercio_id`),
+  ADD UNIQUE KEY `nit_rut` (`nit_rut`),
+  ADD KEY `categoria_comercio_id` (`categoria_comercio_id`);
+
+--
+-- Indices de la tabla `cupones_descuento`
+--
+ALTER TABLE `cupones_descuento`
+  ADD PRIMARY KEY (`cupon_id`),
+  ADD UNIQUE KEY `codigo_cupon` (`codigo_cupon`),
+  ADD KEY `factura_id` (`factura_id`);
+
+--
+-- Indices de la tabla `detalles_factura`
+--
+ALTER TABLE `detalles_factura`
+  ADD PRIMARY KEY (`detalle_id`),
+  ADD KEY `factura_id` (`factura_id`),
+  ADD KEY `producto_id` (`producto_id`);
+
+--
+-- Indices de la tabla `direcciones_usuario`
+--
+ALTER TABLE `direcciones_usuario`
+  ADD PRIMARY KEY (`direccion_id`),
+  ADD KEY `usuario_id` (`usuario_id`);
 
 --
 -- Indices de la tabla `facturas`
 --
 ALTER TABLE `facturas`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `pedido_id` (`pedido_id`),
+  ADD PRIMARY KEY (`factura_id`),
+  ADD UNIQUE KEY `codigo_pedido` (`codigo_pedido`),
+  ADD KEY `usuario_id` (`usuario_id`),
+  ADD KEY `comercio_id` (`comercio_id`),
+  ADD KEY `repartidor_id` (`repartidor_id`),
+  ADD KEY `direccion_id` (`direccion_id`),
   ADD KEY `metodo_pago_id` (`metodo_pago_id`);
-
---
--- Indices de la tabla `favoritos`
---
-ALTER TABLE `favoritos`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `usuario_tienda_unico` (`usuario_id`,`tienda_id`),
-  ADD KEY `tienda_id` (`tienda_id`);
-
---
--- Indices de la tabla `historial_estados_pedido`
---
-ALTER TABLE `historial_estados_pedido`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `pedido_id` (`pedido_id`);
-
---
--- Indices de la tabla `horarios_tiendas`
---
-ALTER TABLE `horarios_tiendas`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `tienda_id` (`tienda_id`);
 
 --
 -- Indices de la tabla `metodos_pago`
 --
 ALTER TABLE `metodos_pago`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `usuario_id` (`usuario_id`);
-
---
--- Indices de la tabla `pedidos`
---
-ALTER TABLE `pedidos`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `cliente_id` (`cliente_id`),
-  ADD KEY `repartidor_id` (`repartidor_id`),
-  ADD KEY `tienda_id` (`tienda_id`),
-  ADD KEY `promocion_id` (`promocion_id`);
+  ADD PRIMARY KEY (`metodo_pago_id`);
 
 --
 -- Indices de la tabla `productos`
 --
 ALTER TABLE `productos`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `tienda_id` (`tienda_id`);
+  ADD PRIMARY KEY (`producto_id`),
+  ADD KEY `categoria_producto_id` (`categoria_producto_id`),
+  ADD KEY `comercio_id` (`comercio_id`);
 
 --
--- Indices de la tabla `promociones`
+-- Indices de la tabla `repartidores`
 --
-ALTER TABLE `promociones`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `codigo` (`codigo`);
+ALTER TABLE `repartidores`
+  ADD PRIMARY KEY (`repartidor_id`),
+  ADD KEY `vehiculo_id` (`vehiculo_id`);
 
 --
--- Indices de la tabla `tiendas`
+-- Indices de la tabla `seguimiento_envio`
 --
-ALTER TABLE `tiendas`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `categoria_tienda_id` (`categoria_tienda_id`);
+ALTER TABLE `seguimiento_envio`
+  ADD PRIMARY KEY (`seguimiento_id`),
+  ADD KEY `factura_id` (`factura_id`);
 
 --
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id`),
+  ADD PRIMARY KEY (`usuario_id`),
   ADD UNIQUE KEY `email` (`email`);
 
 --
--- Indices de la tabla `vehiculos_repartidores`
+-- Indices de la tabla `vehiculos`
 --
-ALTER TABLE `vehiculos_repartidores`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `repartidor_id` (`repartidor_id`);
+ALTER TABLE `vehiculos`
+  ADD PRIMARY KEY (`vehiculo_id`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -493,91 +492,85 @@ ALTER TABLE `vehiculos_repartidores`
 -- AUTO_INCREMENT de la tabla `calificaciones`
 --
 ALTER TABLE `calificaciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `calificacion_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT de la tabla `categorias_tiendas`
+-- AUTO_INCREMENT de la tabla `categorias_comercio`
 --
-ALTER TABLE `categorias_tiendas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+ALTER TABLE `categorias_comercio`
+  MODIFY `categoria_comercio_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT de la tabla `detalles_pedidos`
+-- AUTO_INCREMENT de la tabla `categorias_producto`
 --
-ALTER TABLE `detalles_pedidos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+ALTER TABLE `categorias_producto`
+  MODIFY `categoria_producto_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT de la tabla `devoluciones`
+-- AUTO_INCREMENT de la tabla `comercios`
 --
-ALTER TABLE `devoluciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `comercios`
+  MODIFY `comercio_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT de la tabla `cupones_descuento`
+--
+ALTER TABLE `cupones_descuento`
+  MODIFY `cupon_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `detalles_factura`
+--
+ALTER TABLE `detalles_factura`
+  MODIFY `detalle_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT de la tabla `direcciones_usuario`
+--
+ALTER TABLE `direcciones_usuario`
+  MODIFY `direccion_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `facturas`
 --
 ALTER TABLE `facturas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT de la tabla `favoritos`
---
-ALTER TABLE `favoritos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT de la tabla `historial_estados_pedido`
---
-ALTER TABLE `historial_estados_pedido`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT de la tabla `horarios_tiendas`
---
-ALTER TABLE `horarios_tiendas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `factura_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `metodos_pago`
 --
 ALTER TABLE `metodos_pago`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT de la tabla `pedidos`
---
-ALTER TABLE `pedidos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `metodo_pago_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `producto_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT de la tabla `promociones`
+-- AUTO_INCREMENT de la tabla `repartidores`
 --
-ALTER TABLE `promociones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+ALTER TABLE `repartidores`
+  MODIFY `repartidor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT de la tabla `tiendas`
+-- AUTO_INCREMENT de la tabla `seguimiento_envio`
 --
-ALTER TABLE `tiendas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+ALTER TABLE `seguimiento_envio`
+  MODIFY `seguimiento_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `usuario_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT de la tabla `vehiculos_repartidores`
+-- AUTO_INCREMENT de la tabla `vehiculos`
 --
-ALTER TABLE `vehiculos_repartidores`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+ALTER TABLE `vehiculos`
+  MODIFY `vehiculo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Restricciones para tablas volcadas
@@ -587,79 +580,67 @@ ALTER TABLE `vehiculos_repartidores`
 -- Filtros para la tabla `calificaciones`
 --
 ALTER TABLE `calificaciones`
-  ADD CONSTRAINT `calificaciones_ibfk_1` FOREIGN KEY (`pedido_id`) REFERENCES `pedidos` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_calificaciones_factura` FOREIGN KEY (`factura_id`) REFERENCES `facturas` (`factura_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Filtros para la tabla `detalles_pedidos`
+-- Filtros para la tabla `categorias_producto`
 --
-ALTER TABLE `detalles_pedidos`
-  ADD CONSTRAINT `detalles_pedidos_ibfk_1` FOREIGN KEY (`pedido_id`) REFERENCES `pedidos` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `detalles_pedidos_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `productos` (`id`);
+ALTER TABLE `categorias_producto`
+  ADD CONSTRAINT `fk_categorias_producto_comercio` FOREIGN KEY (`comercio_id`) REFERENCES `comercios` (`comercio_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Filtros para la tabla `devoluciones`
+-- Filtros para la tabla `comercios`
 --
-ALTER TABLE `devoluciones`
-  ADD CONSTRAINT `devoluciones_ibfk_1` FOREIGN KEY (`pedido_id`) REFERENCES `pedidos` (`id`);
+ALTER TABLE `comercios`
+  ADD CONSTRAINT `fk_comercios_categoria` FOREIGN KEY (`categoria_comercio_id`) REFERENCES `categorias_comercio` (`categoria_comercio_id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `cupones_descuento`
+--
+ALTER TABLE `cupones_descuento`
+  ADD CONSTRAINT `fk_cupones_factura` FOREIGN KEY (`factura_id`) REFERENCES `facturas` (`factura_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `detalles_factura`
+--
+ALTER TABLE `detalles_factura`
+  ADD CONSTRAINT `fk_detalles_factura` FOREIGN KEY (`factura_id`) REFERENCES `facturas` (`factura_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_detalles_producto` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`producto_id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `direcciones_usuario`
+--
+ALTER TABLE `direcciones_usuario`
+  ADD CONSTRAINT `fk_direcciones_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`usuario_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `facturas`
 --
 ALTER TABLE `facturas`
-  ADD CONSTRAINT `facturas_ibfk_1` FOREIGN KEY (`pedido_id`) REFERENCES `pedidos` (`id`),
-  ADD CONSTRAINT `facturas_ibfk_2` FOREIGN KEY (`metodo_pago_id`) REFERENCES `metodos_pago` (`id`);
-
---
--- Filtros para la tabla `favoritos`
---
-ALTER TABLE `favoritos`
-  ADD CONSTRAINT `favoritos_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `favoritos_ibfk_2` FOREIGN KEY (`tienda_id`) REFERENCES `tiendas` (`id`) ON DELETE CASCADE;
-
---
--- Filtros para la tabla `historial_estados_pedido`
---
-ALTER TABLE `historial_estados_pedido`
-  ADD CONSTRAINT `historial_estados_pedido_ibfk_1` FOREIGN KEY (`pedido_id`) REFERENCES `pedidos` (`id`) ON DELETE CASCADE;
-
---
--- Filtros para la tabla `horarios_tiendas`
---
-ALTER TABLE `horarios_tiendas`
-  ADD CONSTRAINT `horarios_tiendas_ibfk_1` FOREIGN KEY (`tienda_id`) REFERENCES `tiendas` (`id`) ON DELETE CASCADE;
-
---
--- Filtros para la tabla `metodos_pago`
---
-ALTER TABLE `metodos_pago`
-  ADD CONSTRAINT `metodos_pago_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
-
---
--- Filtros para la tabla `pedidos`
---
-ALTER TABLE `pedidos`
-  ADD CONSTRAINT `pedidos_ibfk_1` FOREIGN KEY (`cliente_id`) REFERENCES `usuarios` (`id`),
-  ADD CONSTRAINT `pedidos_ibfk_2` FOREIGN KEY (`repartidor_id`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `pedidos_ibfk_3` FOREIGN KEY (`tienda_id`) REFERENCES `tiendas` (`id`),
-  ADD CONSTRAINT `pedidos_ibfk_4` FOREIGN KEY (`promocion_id`) REFERENCES `promociones` (`id`) ON DELETE SET NULL;
+  ADD CONSTRAINT `fk_facturas_comercio` FOREIGN KEY (`comercio_id`) REFERENCES `comercios` (`comercio_id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_facturas_direccion` FOREIGN KEY (`direccion_id`) REFERENCES `direcciones_usuario` (`direccion_id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_facturas_metodo_pago` FOREIGN KEY (`metodo_pago_id`) REFERENCES `metodos_pago` (`metodo_pago_id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_facturas_repartidor` FOREIGN KEY (`repartidor_id`) REFERENCES `repartidores` (`repartidor_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_facturas_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`usuario_id`) ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `productos`
 --
 ALTER TABLE `productos`
-  ADD CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`tienda_id`) REFERENCES `tiendas` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_productos_categoria` FOREIGN KEY (`categoria_producto_id`) REFERENCES `categorias_producto` (`categoria_producto_id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_productos_comercio` FOREIGN KEY (`comercio_id`) REFERENCES `comercios` (`comercio_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Filtros para la tabla `tiendas`
+-- Filtros para la tabla `repartidores`
 --
-ALTER TABLE `tiendas`
-  ADD CONSTRAINT `tiendas_ibfk_1` FOREIGN KEY (`categoria_tienda_id`) REFERENCES `categorias_tiendas` (`id`);
+ALTER TABLE `repartidores`
+  ADD CONSTRAINT `fk_repartidores_vehiculo` FOREIGN KEY (`vehiculo_id`) REFERENCES `vehiculos` (`vehiculo_id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Filtros para la tabla `vehiculos_repartidores`
+-- Filtros para la tabla `seguimiento_envio`
 --
-ALTER TABLE `vehiculos_repartidores`
-  ADD CONSTRAINT `vehiculos_repartidores_ibfk_1` FOREIGN KEY (`repartidor_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
+ALTER TABLE `seguimiento_envio`
+  ADD CONSTRAINT `fk_seguimiento_factura` FOREIGN KEY (`factura_id`) REFERENCES `facturas` (`factura_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
