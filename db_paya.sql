@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: localhost:3307
--- Tiempo de generación: 21-10-2026 a las 15:38:15
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 19-11-2026 a las 23:35:31
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Versión de PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -46,58 +46,13 @@ INSERT INTO `calificaciones` (`calificacion_id`, `factura_id`, `puntos_comercio`
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `categorias_comercio`
---
-
-CREATE TABLE `categorias_comercio` (
-  `categoria_comercio_id` int(11) NOT NULL,
-  `nombre` varchar(50) NOT NULL,
-  `descripcion` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `categorias_comercio`
---
-
-INSERT INTO `categorias_comercio` (`categoria_comercio_id`, `nombre`, `descripcion`) VALUES
-(1, 'Restaurantes', 'Comida preparada lista para consumir'),
-(2, 'Heladerías y Postres', 'Helados, malteadas y dulces'),
-(3, 'Supermercados', 'Víveres, frutas, verduras y hogar'),
-(4, 'Farmacias', 'Medicamentos y cuidado personal'),
-(5, 'Mascotas', 'Alimento y accesorios para animales');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `categorias_producto`
---
-
-CREATE TABLE `categorias_producto` (
-  `categoria_producto_id` int(11) NOT NULL,
-  `nombre` varchar(50) NOT NULL,
-  `comercio_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `categorias_producto`
---
-
-INSERT INTO `categorias_producto` (`categoria_producto_id`, `nombre`, `comercio_id`) VALUES
-(1, 'Pollo Frito', 1),
-(2, 'Helado Gourmet', 3),
-(3, 'Lácteos', 2),
-(4, 'Analgésicos', 4),
-(5, 'Snacks Perros', 5);
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `comercios`
 --
 
 CREATE TABLE `comercios` (
   `comercio_id` int(11) NOT NULL,
-  `categoria_comercio_id` int(11) NOT NULL,
+  `usuario_id` int(11) NOT NULL DEFAULT 1,
+  `categoria_comercio_id` int(11) DEFAULT NULL,
   `nombre_comercial` varchar(100) NOT NULL,
   `nit_rut` varchar(20) DEFAULT NULL,
   `direccion` text NOT NULL,
@@ -108,19 +63,21 @@ CREATE TABLE `comercios` (
 -- Volcado de datos para la tabla `comercios`
 --
 
-INSERT INTO `comercios` (`comercio_id`, `categoria_comercio_id`, `nombre_comercial`, `nit_rut`, `direccion`, `telefono`) VALUES
-(1, 2, 'KFC', ' 900.439.301-2', 'Carrera 13 #15-23 Engativa', '3001232345'),
-(2, 5, 'Dog Chow', ' 830.050.346-8', 'Av. 19 Norte', '+571987654'),
-(3, 1, 'Popsy', '860053831-1', 'Av 19 #19-17 Santa Fe', '3103455678'),
-(4, 5, 'Hills', '9004195869-1', 'Calle 100 con 15', '+571555443'),
-(5, 5, 'Snau', ' 902.049.573-2.', 'CC Santa Fe Local 40', '+571888999'),
-(6, 4, 'Farmatodo', '830.129.327-1', 'Carrera 11ª No. 98-50, Of. 301-302, Bogotá D.C.', ' (601) 7432100'),
-(7, 4, 'Cruz Verde', ': 800.149.695-1', ' Carrera 12 # 96-32', '601 486 5000'),
-(8, 4, 'Drogueria Alemana', '890208788-9', 'Carrera 75 No. 24 - 20 ', '(601) 411 1010'),
-(9, 3, 'Fallabella', ' 900.017.447-8 ', 'Calle 99 # 11A – 32', 'Calle 99 # 11A – 32'),
-(10, 3, 'Ktronix', '890.900.943-1', ' Calle 11 No. 31 A – 42 ', '(601) 407 3033'),
-(11, 3, 'DollarCity', ' 900943243-4', 'Av. 3 # 57 Norte – 30, Cali, Valle del Cauca, Colombia', '+57 (2) 3876000'),
-(12, 1, 'McDonalds', '800.244.387-4', ' Av. 116 # 7-15 (Oficina 1402, Edificio Cusezar)', 'contactos@mcdonalds.');
+INSERT INTO `comercios` (`comercio_id`, `usuario_id`, `categoria_comercio_id`, `nombre_comercial`, `nit_rut`, `direccion`, `telefono`) VALUES
+(1, 1, 2, 'KFC', ' 900.439.301-2', 'Carrera 13 #15-23 Engativa', '3001232345'),
+(2, 1, 5, 'Dog Chow', ' 830.050.346-8', 'Av. 19 Norte', '+571987654'),
+(3, 1, 1, 'Popsy', '860053831-1', 'Av 19 #19-17 Santa Fe', '3103455678'),
+(4, 1, 5, 'Hills', '9004195869-1', 'Calle 100 con 15', '+571555443'),
+(5, 1, 5, 'Snau', ' 902.049.573-2.', 'CC Santa Fe Local 40', '+571888999'),
+(6, 1, 4, 'Farmatodo', '830.129.327-1', 'Carrera 11ª No. 98-50, Of. 301-302, Bogotá D.C.', ' (601) 7432100'),
+(7, 1, 4, 'Cruz Verde', ': 800.149.695-1', ' Carrera 12 # 96-32', '601 486 5000'),
+(8, 1, 4, 'Drogueria Alemana', '890208788-9', 'Carrera 75 No. 24 - 20 ', '(601) 411 1010'),
+(9, 1, 3, 'Fallabella', ' 900.017.447-8 ', 'Calle 99 # 11A – 32', 'Calle 99 # 11A – 32'),
+(10, 1, 3, 'Ktronix', '890.900.943-1', ' Calle 11 No. 31 A – 42 ', '(601) 407 3033'),
+(11, 1, 3, 'DollarCity', ' 900943243-4', 'Av. 3 # 57 Norte – 30, Cali, Valle del Cauca, Colombia', '+57 (2) 3876000'),
+(12, 1, 1, 'McDonalds', '800.244.387-4', ' Av. 116 # 7-15 (Oficina 1402, Edificio Cusezar)', 'contactos@mcdonalds.'),
+(13, 7, NULL, 'Restaurante Elver Galarga', '123456789-0', 'Cra 12 #23-34 Bogota', '3006390011'),
+(14, 7, NULL, 'Restaurante prueba', '9010345-9', 'Cra 13 #13-14 Bogota', '3003016699');
 
 -- --------------------------------------------------------
 
@@ -179,22 +136,25 @@ INSERT INTO `detalles_factura` (`detalle_id`, `factura_id`, `producto_id`, `cant
 CREATE TABLE `direcciones_usuario` (
   `direccion_id` int(11) NOT NULL,
   `usuario_id` int(11) NOT NULL,
-  `etiqueta` varchar(50) DEFAULT NULL,
-  `calle_avenida` varchar(150) NOT NULL,
+  `direccion` varchar(150) NOT NULL,
   `ciudad` varchar(50) NOT NULL,
-  `coordenadas_gps` varchar(50) DEFAULT NULL
+  `barrio_localidad` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `direcciones_usuario`
 --
 
-INSERT INTO `direcciones_usuario` (`direccion_id`, `usuario_id`, `etiqueta`, `calle_avenida`, `ciudad`, `coordenadas_gps`) VALUES
-(1, 1, 'Casa', 'Calle 85 #11-32', 'Bogotá', '4.667,-74.056'),
-(2, 1, 'Trabajo', 'Av. El Dorado #69-70', 'Bogotá', '4.656,-74.114'),
-(3, 2, 'Casa', 'Carrera 43A #5A-100', 'Medellín', '6.208,-75.568'),
-(4, 3, 'Apartamento', 'Calle 10 #34-20', 'Cali', '3.451,-76.532'),
-(5, 4, 'Casa', 'Avenida Principal 45', 'Barranquilla', '10.987,-74.801');
+INSERT INTO `direcciones_usuario` (`direccion_id`, `usuario_id`, `direccion`, `ciudad`, `barrio_localidad`) VALUES
+(1, 1, 'Calle 85 #11-32', 'Bogotá', ''),
+(2, 1, 'Av. El Dorado #69-70', 'Bogotá', ''),
+(3, 2, 'Carrera 43A #5A-100', 'Medellín', ''),
+(4, 3, 'Calle 10 #34-20', 'Cali', ''),
+(5, 4, 'Avenida Principal 45', 'Barranquilla', ''),
+(6, 6, 'Cra 72 #23-34', 'Bogota', 'Engativa'),
+(7, 1, 'Cra 1 3#13-13', 'Medellin', 'Comuna 13'),
+(8, 1, 'Cra 110 #12-13', 'Barranquilla', 'Maloca'),
+(10, 7, 'Prueba_cambio', 'Pereira', 'Prueba_cambio');
 
 -- --------------------------------------------------------
 
@@ -237,19 +197,26 @@ INSERT INTO `facturas` (`factura_id`, `codigo_pedido`, `fecha_emision`, `usuario
 
 CREATE TABLE `metodos_pago` (
   `metodo_pago_id` int(11) NOT NULL,
-  `nombre` varchar(50) NOT NULL
+  `usuario_id` int(11) NOT NULL DEFAULT 1,
+  `tipo_tarjeta` enum('Visa','Mastercard','American Express','Otro') NOT NULL DEFAULT 'Visa',
+  `numero_tarjeta` varchar(20) DEFAULT NULL,
+  `fecha_expedicion` varchar(10) DEFAULT NULL,
+  `cvv` varchar(4) DEFAULT NULL,
+  `nombre_titular` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `metodos_pago`
 --
 
-INSERT INTO `metodos_pago` (`metodo_pago_id`, `nombre`) VALUES
-(1, 'Tarjeta de Crédito Visa'),
-(2, 'Tarjeta de Débito Mastercard'),
-(3, 'Efectivo contra entrega'),
-(4, 'Billetera Digital App'),
-(5, 'Transferencia Bancaria');
+INSERT INTO `metodos_pago` (`metodo_pago_id`, `usuario_id`, `tipo_tarjeta`, `numero_tarjeta`, `fecha_expedicion`, `cvv`, `nombre_titular`) VALUES
+(1, 1, 'Visa', NULL, NULL, NULL, 'Tarjeta de Crédito Visa'),
+(2, 1, 'Visa', NULL, NULL, NULL, 'Tarjeta de Débito Mastercard'),
+(3, 1, 'Visa', NULL, NULL, NULL, 'Efectivo contra entrega'),
+(4, 1, 'Visa', NULL, NULL, NULL, 'Billetera Digital App'),
+(5, 1, 'Visa', NULL, NULL, NULL, 'Transferencia Bancaria'),
+(6, 1, 'Visa', '1234567890', '12/23', '123', 'Mariana Rios'),
+(8, 7, 'Mastercard', '0987654321', '00/00', '1234', 'Admin');
 
 -- --------------------------------------------------------
 
@@ -259,24 +226,24 @@ INSERT INTO `metodos_pago` (`metodo_pago_id`, `nombre`) VALUES
 
 CREATE TABLE `productos` (
   `producto_id` int(11) NOT NULL,
-  `categoria_producto_id` int(11) NOT NULL,
+  `categoria_producto_id` int(11) DEFAULT NULL,
   `comercio_id` int(11) NOT NULL,
   `nombre` varchar(100) NOT NULL,
   `descripcion` text DEFAULT NULL,
-  `precio_venta` decimal(10,2) NOT NULL,
-  `disponible` tinyint(1) DEFAULT 1
+  `precio` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `productos`
 --
 
-INSERT INTO `productos` (`producto_id`, `categoria_producto_id`, `comercio_id`, `nombre`, `descripcion`, `precio_venta`, `disponible`) VALUES
-(1, 1, 1, 'Balde de Pollo 8 Pzas', '8 piezas de pollo crujiente + papas', 45000.00, 1),
-(2, 2, 3, 'Malteada Popsy Familiar', 'Malteada de helado gourmet de 1L', 18000.00, 1),
-(3, 3, 2, 'Leche Entera 1L', 'Bolsa de leche entera pasteurizada', 4200.00, 1),
-(4, 4, 4, 'Caja de Acetaminofén 500mg', 'Blister por 10 tabletas', 3500.00, 1),
-(5, 5, 5, 'Galletas para Perro', 'Paquete de galletas horneadas sabor pollo', 12000.00, 1);
+INSERT INTO `productos` (`producto_id`, `categoria_producto_id`, `comercio_id`, `nombre`, `descripcion`, `precio`) VALUES
+(1, 1, 1, 'Balde de Pollo 8 Pzas', '8 piezas de pollo crujiente + papas', 45000.00),
+(2, 2, 3, 'Malteada Popsy Familiar', 'Malteada de helado gourmet de 1L', 18000.00),
+(3, 3, 2, 'Leche Entera 1L', 'Bolsa de leche entera pasteurizada', 4200.00),
+(4, 4, 4, 'Caja de Acetaminofén 500mg', 'Blister por 10 tabletas', 3500.00),
+(5, 5, 5, 'Galletas para Perro', 'Paquete de galletas horneadas sabor pollo', 12000.00),
+(6, NULL, 13, 'Pollo asado', 'pollo asado', 20000.00);
 
 -- --------------------------------------------------------
 
@@ -337,6 +304,7 @@ CREATE TABLE `usuarios` (
   `usuario_id` int(11) NOT NULL,
   `nombre` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
+  `contrasena` varchar(100) NOT NULL DEFAULT '1234',
   `telefono` varchar(20) DEFAULT NULL,
   `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -345,12 +313,15 @@ CREATE TABLE `usuarios` (
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`usuario_id`, `nombre`, `email`, `telefono`, `fecha_registro`) VALUES
-(1, 'Mariana Ríos', 'mariana@email.com', '+573001111111', '2026-10-07 14:17:04'),
-(2, 'Santiago Peña', 'santiago@email.com', '+573002222222', '2026-10-07 14:17:04'),
-(3, 'Camila López', 'camila@email.com', '+573003333333', '2026-10-07 14:17:04'),
-(4, 'Esteban Quito', 'esteban@email.com', '+573004444444', '2026-10-07 14:17:04'),
-(5, 'Valeria Vélez', 'valeria@email.com', '+573005555555', '2026-10-07 14:17:04');
+INSERT INTO `usuarios` (`usuario_id`, `nombre`, `email`, `contrasena`, `telefono`, `fecha_registro`) VALUES
+(1, 'Mariana Ríos', 'mariana@email.com', '1234', '+573001111111', '2026-10-07 14:17:04'),
+(2, 'Santiago Peña', 'santiago@email.com', '1234', '+573002222222', '2026-10-07 14:17:04'),
+(3, 'Camila López', 'camila@email.com', '1234', '+573003333333', '2026-10-07 14:17:04'),
+(4, 'Esteban Quito', 'esteban@email.com', '1234', '+573004444444', '2026-10-07 14:17:04'),
+(5, 'Valeria Vélez', 'valeria@email.com', '1234', '+573005555555', '2026-10-07 14:17:04'),
+(6, 'Nataly', 'nataly123@gmail.com', 'na234', '3115678777', '2026-11-18 13:30:52'),
+(7, 'Admin', 'admin@gmail.com', '1', '3006390011', '2026-11-19 00:14:56'),
+(8, 'perro loco', 'pendienteporpublicar@yopmail.com', 'silent*1', '3013036699', '2026-11-19 00:25:13');
 
 -- --------------------------------------------------------
 
@@ -388,25 +359,13 @@ ALTER TABLE `calificaciones`
   ADD KEY `factura_id` (`factura_id`);
 
 --
--- Indices de la tabla `categorias_comercio`
---
-ALTER TABLE `categorias_comercio`
-  ADD PRIMARY KEY (`categoria_comercio_id`);
-
---
--- Indices de la tabla `categorias_producto`
---
-ALTER TABLE `categorias_producto`
-  ADD PRIMARY KEY (`categoria_producto_id`),
-  ADD KEY `comercio_id` (`comercio_id`);
-
---
 -- Indices de la tabla `comercios`
 --
 ALTER TABLE `comercios`
   ADD PRIMARY KEY (`comercio_id`),
   ADD UNIQUE KEY `nit_rut` (`nit_rut`),
-  ADD KEY `categoria_comercio_id` (`categoria_comercio_id`);
+  ADD KEY `categoria_comercio_id` (`categoria_comercio_id`),
+  ADD KEY `fk_comercios_usuario` (`usuario_id`);
 
 --
 -- Indices de la tabla `cupones_descuento`
@@ -447,7 +406,8 @@ ALTER TABLE `facturas`
 -- Indices de la tabla `metodos_pago`
 --
 ALTER TABLE `metodos_pago`
-  ADD PRIMARY KEY (`metodo_pago_id`);
+  ADD PRIMARY KEY (`metodo_pago_id`),
+  ADD KEY `fk_metodos_pago_usuario` (`usuario_id`);
 
 --
 -- Indices de la tabla `productos`
@@ -495,22 +455,10 @@ ALTER TABLE `calificaciones`
   MODIFY `calificacion_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT de la tabla `categorias_comercio`
---
-ALTER TABLE `categorias_comercio`
-  MODIFY `categoria_comercio_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT de la tabla `categorias_producto`
---
-ALTER TABLE `categorias_producto`
-  MODIFY `categoria_producto_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
 -- AUTO_INCREMENT de la tabla `comercios`
 --
 ALTER TABLE `comercios`
-  MODIFY `comercio_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `comercio_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `cupones_descuento`
@@ -528,7 +476,7 @@ ALTER TABLE `detalles_factura`
 -- AUTO_INCREMENT de la tabla `direcciones_usuario`
 --
 ALTER TABLE `direcciones_usuario`
-  MODIFY `direccion_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `direccion_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `facturas`
@@ -540,13 +488,13 @@ ALTER TABLE `facturas`
 -- AUTO_INCREMENT de la tabla `metodos_pago`
 --
 ALTER TABLE `metodos_pago`
-  MODIFY `metodo_pago_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `metodo_pago_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `producto_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `producto_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `repartidores`
@@ -564,7 +512,7 @@ ALTER TABLE `seguimiento_envio`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `usuario_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `usuario_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `vehiculos`
@@ -583,16 +531,11 @@ ALTER TABLE `calificaciones`
   ADD CONSTRAINT `fk_calificaciones_factura` FOREIGN KEY (`factura_id`) REFERENCES `facturas` (`factura_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Filtros para la tabla `categorias_producto`
---
-ALTER TABLE `categorias_producto`
-  ADD CONSTRAINT `fk_categorias_producto_comercio` FOREIGN KEY (`comercio_id`) REFERENCES `comercios` (`comercio_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
 -- Filtros para la tabla `comercios`
 --
 ALTER TABLE `comercios`
-  ADD CONSTRAINT `fk_comercios_categoria` FOREIGN KEY (`categoria_comercio_id`) REFERENCES `categorias_comercio` (`categoria_comercio_id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_comercios_categoria` FOREIGN KEY (`categoria_comercio_id`) REFERENCES `categorias_comercio` (`categoria_comercio_id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_comercios_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`usuario_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `cupones_descuento`
@@ -622,6 +565,12 @@ ALTER TABLE `facturas`
   ADD CONSTRAINT `fk_facturas_metodo_pago` FOREIGN KEY (`metodo_pago_id`) REFERENCES `metodos_pago` (`metodo_pago_id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_facturas_repartidor` FOREIGN KEY (`repartidor_id`) REFERENCES `repartidores` (`repartidor_id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_facturas_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`usuario_id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `metodos_pago`
+--
+ALTER TABLE `metodos_pago`
+  ADD CONSTRAINT `fk_metodos_pago_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`usuario_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `productos`
